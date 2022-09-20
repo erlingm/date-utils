@@ -1,4 +1,4 @@
-package no.moldesoft.utils;
+package no.moldesoft.lib.utils;
 
 import java.io.Serializable;
 import java.time.DateTimeException;
@@ -20,8 +20,9 @@ public class LocalInterval implements Serializable {
     public static LocalInterval of(LocalDate startDateInclusive, LocalDate endDateExclusive) {
         Objects.requireNonNull(startDateInclusive, "startDateInclusive");
         Objects.requireNonNull(endDateExclusive, "endDateExclusive");
-        if (!startDateInclusive.isBefore(endDateExclusive))
+        if (!startDateInclusive.isBefore(endDateExclusive)) {
             throw new DateTimeException("Start date must be earlier than end date: " + startDateInclusive + "-" + endDateExclusive);
+        }
         return new LocalInterval(startDateInclusive, endDateExclusive);
     }
 

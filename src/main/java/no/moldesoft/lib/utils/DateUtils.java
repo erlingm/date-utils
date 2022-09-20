@@ -1,4 +1,4 @@
-package no.moldesoft.utils;
+package no.moldesoft.lib.utils;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -30,14 +30,14 @@ public class DateUtils {
     public static LocalDate easterSunday(int year) {
         /* Computus (ref. http://en.wikipedia.org/wiki/Computus) */
 
-		/* Anonymous Gregorian algorithm
+        /* Anonymous Gregorian algorithm
          *
-		 * "A New York correspondent" submitted this algorithm for determining the Gregorian Easter
-		 * to the journal Nature in 1876. It has been reprinted many times, in 1877 by Samuel
-		 * Butcher in The Ecclesiastical Calendar, in 1922 by H. Spencer Jones in General Astronomy,
-		 * in 1977 by the Journal of the British Astronomical Association, in 1977 by The Old
-		 * Farmer's Almanac, in 1988 by Peter Duffett-Smith in Practical Astronomy with your
-		 * Calculator, and in 1991 by Jean Meeus in Astronomical Algorithms. */
+         * "A New York correspondent" submitted this algorithm for determining the Gregorian Easter
+         * to the journal Nature in 1876. It has been reprinted many times, in 1877 by Samuel
+         * Butcher in The Ecclesiastical Calendar, in 1922 by H. Spencer Jones in General Astronomy,
+         * in 1977 by the Journal of the British Astronomical Association, in 1977 by The Old
+         * Farmer's Almanac, in 1988 by Peter Duffett-Smith in Practical Astronomy with your
+         * Calculator, and in 1991 by Jean Meeus in Astronomical Algorithms. */
 
         final int a = year % 19;
         final int b = year / 100;
@@ -90,15 +90,17 @@ public class DateUtils {
 
     public static Optional<LocalDateTime> getLocalDateTime(ResultSet rs, int columnIndex) throws SQLException {
         Timestamp ts = rs.getTimestamp(columnIndex);
-        if (ts == null)
+        if (ts == null) {
             return Optional.empty();
+        }
         return Optional.of(ts.toLocalDateTime());
     }
 
     public static Optional<LocalDate> getLocalDate(ResultSet rs, int columnIndex) throws SQLException {
         Date date = rs.getDate(columnIndex);
-        if (date == null)
+        if (date == null) {
             return Optional.empty();
+        }
         return Optional.of(date.toLocalDate());
     }
 

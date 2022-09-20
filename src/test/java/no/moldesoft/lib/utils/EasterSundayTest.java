@@ -1,86 +1,106 @@
-package no.moldesoft.utils;
+package no.moldesoft.lib.utils;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.stream.Stream;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  * Created by Erling Molde on 03.05.2017.
  */
-@RunWith(Parameterized.class)
 public class EasterSundayTest {
 
-    private final int dayOfMonth;
-    private final Month month;
-    private final int year;
-    private LocalInterval easter;
-
-    @Parameters(name = "{index}: easterSunday({2}) is {0}-{1}-{2}")
-    public static Object[][] data() {
-        return new Object[][]{
-                {13, Month.APRIL, 1800},
-                {5, Month.APRIL, 1885},
-                {15, Month.APRIL, 1900},
-                {21, Month.APRIL, 1957},
-                {18, Month.APRIL, 1976},
-                {23, Month.APRIL, 2000},
-                {15, Month.APRIL, 2001},
-                {16, Month.APRIL, 2017},
-                {1, Month.APRIL, 2018},
-                {21, Month.APRIL, 2019},
-                {12, Month.APRIL, 2020},
-                {4, Month.APRIL, 2021},
-                {17, Month.APRIL, 2022},
-                {9, Month.APRIL, 2023},
-                {31, Month.MARCH, 2024},
-        };
+    // @Parameters(name = "{index}: easterSunday({2}) is {0}-{1}-{2}")
+    public static Stream<LocalDate> data() {
+        return Stream.of(
+                LocalDate.of(1800, Month.APRIL, 13),
+                LocalDate.of(1885, Month.APRIL, 5),
+                LocalDate.of(1900, Month.APRIL, 15),
+                LocalDate.of(1957, Month.APRIL, 21),
+                LocalDate.of(1976, Month.APRIL, 18),
+                LocalDate.of(2000, Month.APRIL, 23),
+                LocalDate.of(2001, Month.APRIL, 15),
+                LocalDate.of(2017, Month.APRIL, 16),
+                LocalDate.of(2018, Month.APRIL, 1),
+                LocalDate.of(2019, Month.APRIL, 21),
+                LocalDate.of(2020, Month.APRIL, 12),
+                LocalDate.of(2021, Month.APRIL, 4),
+                LocalDate.of(2022, Month.APRIL, 17),
+                LocalDate.of(2023, Month.APRIL, 9),
+                LocalDate.of(2024, Month.MARCH, 31)
+        );
     }
 
-    public EasterSundayTest(int dayOfMonth, Month month, int year) {
-        this.dayOfMonth = dayOfMonth;
-        this.month = month;
-        this.year = year;
+    public static Stream<Arguments> data2() {
+        return Stream.of(
+                arguments(1800, Month.APRIL, 13),
+                arguments(1800, Month.APRIL, 13),
+                arguments(1885, Month.APRIL, 5),
+                arguments(1900, Month.APRIL, 15),
+                arguments(1957, Month.APRIL, 21),
+                arguments(1976, Month.APRIL, 18),
+                arguments(2000, Month.APRIL, 23),
+                arguments(2001, Month.APRIL, 15),
+                arguments(2017, Month.APRIL, 16),
+                arguments(2018, Month.APRIL, 1),
+                arguments(2019, Month.APRIL, 21),
+                arguments(2020, Month.APRIL, 12),
+                arguments(2021, Month.APRIL, 4),
+                arguments(2022, Month.APRIL, 17),
+                arguments(2023, Month.APRIL, 9),
+                arguments(2024, Month.MARCH, 31)
+        );
     }
 
-    @Test
-    public void easterSundayTest() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void easterSundayTest(LocalDate testDate) {
+        LocalDate date = DateUtils.easterSunday(testDate.getYear());
+        assertEquals(testDate.getYear(), date.getYear(), "year is wrong");
+        assertEquals(testDate.getMonth(), date.getMonth(), "month is wrong");
+        assertEquals(testDate.getDayOfMonth(), date.getDayOfMonth(), "dayOfMonth is wrong");
+    }
+
+    @ParameterizedTest
+    @MethodSource("data2")
+    public void easterSundayTest2(int year, Month month, int dayOfMonth) {
         LocalDate date = DateUtils.easterSunday(year);
-        assertThat("year is wrong", date.getYear(), equalTo(year));
-        assertThat("month is wrong", date.getMonth(), equalTo(month));
-        assertThat("dayOfMonth is wrong", date.getDayOfMonth(), equalTo(dayOfMonth));
+        assertEquals(year, date.getYear(), "year is wrong");
+        assertEquals(month, date.getMonth(), "month is wrong");
+        assertEquals(dayOfMonth, date.getDayOfMonth(), "dayOfMonth is wrong");
     }
 
-    @Test
-    public void easterBeforeStartTest() {
-        easter = DateUtils.easter(year);
+    @ParameterizedTest
+    @MethodSource("data2")
+    public void easterBeforeStartTest(int year, Month month, int dayOfMonth) {
+        LocalInterval easter = DateUtils.easter(year);
         assertFalse(easter.contains(LocalDate.of(year, month, dayOfMonth).minusDays(7)));
     }
 
-    @Test
-    public void easterOnStartTest() {
-        easter = DateUtils.easter(year);
+    @ParameterizedTest
+    @MethodSource("data2")
+    public void easterOnStartTest(int year, Month month, int dayOfMonth) {
+        LocalInterval easter = DateUtils.easter(year);
         assertTrue(easter.contains(LocalDate.of(year, month, dayOfMonth).minusDays(6)));
     }
 
-    @Test
-    public void easterOnEndTest() {
-        easter = DateUtils.easter(year);
+    @ParameterizedTest
+    @MethodSource("data2")
+    public void easterOnEndTest(int year, Month month, int dayOfMonth) {
+        LocalInterval easter = DateUtils.easter(year);
         assertTrue(easter.contains(LocalDate.of(year, month, dayOfMonth).plusDays(1)));
     }
 
-    @Test
-    public void easterAfterEndTest() {
-        easter = DateUtils.easter(year);
+    @ParameterizedTest
+    @MethodSource("data2")
+    public void easterAfterEndTest(int year, Month month, int dayOfMonth) {
+        LocalInterval easter = DateUtils.easter(year);
         assertFalse(easter.contains(LocalDate.of(year, month, dayOfMonth).plusDays(2)));
     }
 }
