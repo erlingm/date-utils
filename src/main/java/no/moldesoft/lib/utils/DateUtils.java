@@ -68,6 +68,10 @@ public class DateUtils {
         return easter.getStartDateInclusive().plusDays(45);
     }
 
+    public static LocalDate ascensionThursday(int year) {
+        return ascensionThursday(easterSunday(year));
+    }
+
     public static LocalDate pentecostSunday(LocalDate easterSunday) {
         Objects.requireNonNull(easterSunday, "easterSunday");
         return easterSunday.plusDays(49);
@@ -78,6 +82,10 @@ public class DateUtils {
         return easter.getStartDateInclusive().plusDays(55);
     }
 
+    public static LocalDate pentecostSunday(int year) {
+        return pentecostSunday(easterSunday(year));
+    }
+
     public static LocalDate pentecostMonday(LocalDate easterSunday) {
         Objects.requireNonNull(easterSunday, "easterSunday");
         return easterSunday.plusDays(50);
@@ -86,6 +94,10 @@ public class DateUtils {
     public static LocalDate pentecostMonday(LocalInterval easter) {
         Objects.requireNonNull(easter, "easter");
         return easter.getStartDateInclusive().plusDays(56);
+    }
+
+    public static LocalDate pentecostMonday(int year) {
+        return pentecostMonday(easterSunday(year));
     }
 
     public static Optional<LocalDateTime> getLocalDateTime(ResultSet rs, int columnIndex) throws SQLException {
