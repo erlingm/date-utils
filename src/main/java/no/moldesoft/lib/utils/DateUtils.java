@@ -27,6 +27,19 @@ public class DateUtils {
         return LocalInterval.of(mondayOfEasterWeek, tuesdayAfterEasterWeek);
     }
 
+    /**
+     * Computes the interval for Easter, starting from the Monday of Easter week to the Tuesday after Easter Sunday.
+     *
+     * @param year the year for which to calculate the Easter interval.
+     * @return the interval from the Monday of Easter week to the Tuesday after Easter Sunday.
+     */
+    public static LocalDateInterval easterInterval(int year) {
+        LocalDate easterSunday = easterSunday(year);
+        LocalDate mondayOfEasterWeek = easterSunday.minusDays(6);
+        LocalDate tuesdayAfterEasterWeek = easterSunday.plusDays(2);
+        return LocalDateInterval.of(mondayOfEasterWeek, tuesdayAfterEasterWeek);
+    }
+
     public static LocalDate easterSunday(int year) {
         /* Computus (ref. http://en.wikipedia.org/wiki/Computus) */
 

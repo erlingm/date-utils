@@ -40,7 +40,6 @@ public class EasterSundayTest {
     public static Stream<Arguments> data2() {
         return Stream.of(
                 arguments(1800, Month.APRIL, 13),
-                arguments(1800, Month.APRIL, 13),
                 arguments(1885, Month.APRIL, 5),
                 arguments(1900, Month.APRIL, 15),
                 arguments(1957, Month.APRIL, 21),
@@ -85,9 +84,24 @@ public class EasterSundayTest {
 
     @ParameterizedTest
     @MethodSource("data2")
+    public void easterBeforeStartTestUsingLocalDateInterval(int year, Month month, int dayOfMonth) {
+        LocalDateInterval easter = DateUtils.easterInterval(year);
+        assertFalse(easter.contains(LocalDate.of(year, month, dayOfMonth).minusDays(7)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("data2")
     public void easterOnStartTest(int year, Month month, int dayOfMonth) {
         LocalInterval easter = DateUtils.easter(year);
         assertTrue(easter.contains(LocalDate.of(year, month, dayOfMonth).minusDays(6)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("data2")
+    public void easterOnStartTestUsingLocalDateInterval(int year, Month month, int dayOfMonth) {
+        LocalDateInterval easter = DateUtils.easterInterval(year);
+        LocalDate localDate = LocalDate.of(year, month, dayOfMonth).minusDays(6);
+        assertTrue(easter.contains(localDate), () -> "localDate: " + localDate + " is not in interval: " + easter);
     }
 
     @ParameterizedTest
@@ -99,8 +113,22 @@ public class EasterSundayTest {
 
     @ParameterizedTest
     @MethodSource("data2")
+    public void easterOnEndTestUsingLocalDateInterval(int year, Month month, int dayOfMonth) {
+        LocalDateInterval easter = DateUtils.easterInterval(year);
+        assertTrue(easter.contains(LocalDate.of(year, month, dayOfMonth).plusDays(1)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("data2")
     public void easterAfterEndTest(int year, Month month, int dayOfMonth) {
         LocalInterval easter = DateUtils.easter(year);
+        assertFalse(easter.contains(LocalDate.of(year, month, dayOfMonth).plusDays(2)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("data2")
+    public void easterAfterEndTestUsingLocalDateInterval(int year, Month month, int dayOfMonth) {
+        LocalDateInterval easter = DateUtils.easterInterval(year);
         assertFalse(easter.contains(LocalDate.of(year, month, dayOfMonth).plusDays(2)));
     }
 }
